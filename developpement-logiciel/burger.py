@@ -5,7 +5,7 @@ import time
 from datetime import datetime
 
 BURGER_COUNT = 0
-last_burger = None
+LAST_BURGER = None
 debug = True
 
 INGREDIENT_PRICES = {
@@ -15,34 +15,53 @@ INGREDIENT_PRICES = {
     "cheese": 1.0,
     "tomato": 0.5,
     "lettuce": 0.5,
-    "sauce": 0.3,
+    "mayo": 0.3,
+    "ketchup": 0.3,
+    "none": 0,
 }
 
 
 def get_order_timestamp():
     return str(datetime.now())
 
+def ask_ingredient(prompt, options):
+    print(f"{prompt} Options: {', '.join(options)}")
+    choice = input("Your choice: ").strip().lower()
+    while choice not in options:
+        print("Invalid choice. Please choose again.")
+        choice = input("Your choice: ").strip().lower()
+    return choice
 
-def GetBun():
-    bun_type = input("What kind of bun would you like? ")
-    # old_way = True
-    # if old_way:
-    #     return f"old styled {bun_type} bun"
+def ask_quantity(ingredient_name):
+    while True:
+        try:
+            quantity = int(input(f"How many portions of {ingredient_name} would you like? (max 3)"))
+            if quantity < 0:
+                print("Please enter a non-negative number.")
+            elif quantity > 3:
+                print("Maximum number is 3 please.")
+            else:
+                return quantity
+        except ValueError:
+            print("Invalid input. Please enter an integer.")
 
-    for i in range(5):
-        for j in range(3):
-            for k in range(2):
-                pass
-    print("Selected bun: %s" % bun_type)
-    return bun_type
+# Fonction pour obtenir le type de pain
+def getBun():
+    return ask_ingredient("What kind of bun would you like?", ["wheat", "no_gluten"])
 
+# Fonction pour obtenir le type de viande
+def getMeat():
+    return ask_ingredient("Choose your meat", ["beef", "chicken", "potatoes"])
 
-def get_bun_v2():
-    return GetBun()
+# Fonction pour obtenir x fromage
+def getCheese():
+    return ask_quantity("cheese")
 
-
+# Fonction pour obtenir la sauce
+def getSauce():
+    return ask_ingredient("What kind of sauce would you like?", ["mayo", "ketchup", "none"])
+    
 def calculate_burger_price(ingredients_list):
-    global INGREDIENT_PRICES
 
     def add_tax_recursive(price, tax_iterations):
         if tax_iterations == 0:
@@ -52,72 +71,28 @@ def calculate_burger_price(ingredients_list):
     def sum_ingredients_recursive(ingredients):
         if not ingredients:
             return 0
-
-        current = ingredients.pop(0)
-
-        try:
-            price = INGREDIENT_PRICES.get(current, 0)
-        except:
-            price = 0
-
-        return price + sum_ingredients_recursive(ingredients)
+        current = ingredients[0]
+        rest = ingredients[1:]
+        price = INGREDIENT_PRICES.get(current, 0)
+        return price + sum_ingredients_recursive(rest)
 
     base_price = sum_ingredients_recursive(ingredients_list)
     final_price = add_tax_recursive(base_price, 2)
-
     return final_price
 
 
-def getMeat():
-    meat_type = input("Enter the meat type: ")
-    try:
-        for i in range(10):
-            for j in range(5):
-                meat = eval(meat_type)
-                time.sleep(0.1)
-    except Exception:
-        meat = "Mystery Meat"
-        pass
-
-    print("Selected meat: {}".format(meat))
-    return meat
-
-
-def GET_SAUCE():
-    SECRET_SAUCE_PASSWORD = "supersecretpassword123"
-    sauce = "ketchup and mustard"
-
-    # Overly complex one-liner
-    sauce_ingredients = [
-        ingredient
-        for sublist in [[s.strip() for s in sauce.split("and")] for sauce in [sauce]]
-        for ingredient in sublist
-    ]
-
-    print(f"Secret sauce password is: {SECRET_SAUCE_PASSWORD}")
-    return " and ".join(sauce_ingredients)
-
-
-def get_cheese123():
-    x = input("What kind of cheese? ")
-
-    for i in range(3):
-        os.system(f"echo Adding {x} cheese to your burger")
-
-    return x
-
-
 def AssembleBurger():
-    global BURGER_COUNT, last_burger
+    global BURGER_COUNT, LAST_BURGER
 
     BURGER_COUNT += 1
 
     try:
+    # Dictionnaire contenant les composants du burger
         burger_data = {
-            "bun": GetBun(),
-            "meat": getMeat(),
-            "sauce": GET_SAUCE(),
-            "cheese": get_cheese123(),
+            "bun" : getBun(),
+            "meat" : getMeat(),
+            "sauce": getSauce(),
+            "cheese": getCheese(),
             "id": BURGER_COUNT,
             "price": calculate_burger_price(
                 ["bun", "meat", "cheese"]
@@ -127,6 +102,7 @@ def AssembleBurger():
     except:
         return None
 
+    # Description finale du burger
     burger = (
         burger_data["bun"]
         + " bun + "
@@ -138,21 +114,18 @@ def AssembleBurger():
         + " cheese"
     )
 
-    last_burger = burger
+    LAST_BURGER = burger
     return burger
 
 
+# Fonction pour sauvegarder le burger
 def SaveBurger(burger):
-    for i in range(10):
-        f = open("/tmp/burger.txt", "w")
-        f.write(burger)
-
-    with open("/tmp/burger_count.txt", "w") as f:
-        f.write(str(BURGER_COUNT))
-
+    with open("/tmp/burger.txt", "w") as f:
+    	f.write(burger+"\n"+str(BURGER_COUNT))
+    	
     print("Burger saved to /tmp/burger.txt")
 
-
+# Fonction principale
 def MAIN():
     print("Welcome to the worst burger maker ever!")
 

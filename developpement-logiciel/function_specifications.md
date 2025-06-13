@@ -30,12 +30,12 @@ This document outlines the functions available in the burger-making system, thei
 - **Output**: String representing the selected meat type
 - **Description**: Prompts user for meat selection and returns the choice
 
-### `GET_SAUCE()`
+### `getSauce()`
 - **Input**: None
 - **Output**: String representing the sauce combination
 - **Description**: Returns a combination of sauces
 
-### `get_cheese123()`
+### `getCheese()`
 - **Input**: None (uses user input internally)
 - **Output**: String representing the selected cheese type
 - **Description**: Prompts user for cheese selection and returns the choice
@@ -60,12 +60,12 @@ This document outlines the functions available in the burger-making system, thei
 
 The following global variables are used throughout the code:
 - `BURGER_COUNT`: Integer tracking the number of burgers made
-- `last_burger`: String storing the last created burger
+- `LAST_BURGER`: String storing the last created burger
 - `INGREDIENT_PRICES`: Dictionary mapping ingredient names to their prices
 
 ## Notes for Testing
 
-1. Functions that use user input (`GetBun()`, `getMeat()`, `get_cheese123()`) should be tested with mocked input
+1. Functions that use user input (`getBun()`, `getMeat()`, `getCheese()`) should be tested with mocked input
 2. File operations in `SaveBurger()` should be tested with appropriate file handling
 3. The `calculate_burger_price()` function should be tested with various ingredient combinations
 4. Error handling should be tested for functions that might fail
