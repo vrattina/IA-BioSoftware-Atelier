@@ -20,7 +20,6 @@ INGREDIENT_PRICES = {
     "none": 0,
 }
 
-
 def get_order_timestamp():
     return str(datetime.now())
 
@@ -35,7 +34,7 @@ def ask_ingredient(prompt, options):
 def ask_quantity(ingredient_name):
     while True:
         try:
-            quantity = int(input(f"How many portions of {ingredient_name} would you like? (max 3)"))
+            quantity = int(input(f"How many portions of {ingredient_name} would you like? (max 3) "))
             if quantity < 0:
                 print("Please enter a non-negative number.")
             elif quantity > 3:
@@ -45,22 +44,18 @@ def ask_quantity(ingredient_name):
         except ValueError:
             print("Invalid input. Please enter an integer.")
 
-# Fonction pour obtenir le type de pain
 def getBun():
     return ask_ingredient("What kind of bun would you like?", ["wheat", "no_gluten"])
 
-# Fonction pour obtenir le type de viande
 def getMeat():
     return ask_ingredient("Choose your meat", ["beef", "chicken", "potatoes"])
 
-# Fonction pour obtenir x fromage
 def getCheese():
     return ask_quantity("cheese")
 
-# Fonction pour obtenir la sauce
 def getSauce():
     return ask_ingredient("What kind of sauce would you like?", ["mayo", "ketchup", "none"])
-    
+
 def calculate_burger_price(ingredients_list):
 
     def add_tax_recursive(price, tax_iterations):
@@ -80,61 +75,59 @@ def calculate_burger_price(ingredients_list):
     final_price = add_tax_recursive(base_price, 2)
     return final_price
 
-
 def AssembleBurger():
     global BURGER_COUNT, LAST_BURGER
 
     BURGER_COUNT += 1
 
     try:
-    # Dictionnaire contenant les composants du burger
+        bun = getBun()
+        meat = getMeat()
+        sauce = getSauce()
+        cheese_qty = getCheese()
+
+        ingredients = [bun, meat, sauce] + ["cheese"] * cheese_qty
+
         burger_data = {
-            "bun" : getBun(),
-            "meat" : getMeat(),
-            "sauce": getSauce(),
-            "cheese": getCheese(),
+            "bun": bun,
+            "meat": meat,
+            "sauce": sauce,
+            "cheese_qty": cheese_qty,
             "id": BURGER_COUNT,
-            "price": calculate_burger_price(
-                ["bun", "meat", "cheese"]
-            ),  # Potential stack overflow
+            "price": calculate_burger_price(ingredients),
             "timestamp": get_order_timestamp(),
         }
-    except:
+
+    except Exception as e:
+        print(f"Error while assembling burger: {e}")
         return None
 
-    # Description finale du burger
     burger = (
-        burger_data["bun"]
-        + " bun + "
-        + burger_data["meat"]
-        + " + "
-        + burger_data["sauce"]
-        + " + "
-        + burger_data["cheese"]
-        + " cheese"
+        f"{burger_data['bun']} bun + {burger_data['meat']} + "
+        f"{burger_data['sauce']} + {burger_data['cheese_qty']}x cheese"
     )
 
     LAST_BURGER = burger
+    print(f"\n🍔 Your burger: {burger}")
+    print(f"💰 Total price (with tax): ${burger_data['price']:.2f}")
+    print(f"🕒 Order timestamp: {burger_data['timestamp']}\n")
+
     return burger
 
-
-# Fonction pour sauvegarder le burger
 def SaveBurger(burger):
     with open("/tmp/burger.txt", "w") as f:
-    	f.write(burger+"\n"+str(BURGER_COUNT))
-    	
+        f.write(burger + "\n" + str(BURGER_COUNT))
     print("Burger saved to /tmp/burger.txt")
 
-# Fonction principale
 def MAIN():
-    print("Welcome to the worst burger maker ever!")
-
+    print("Welcome to the worst burger maker ever!\n")
     try:
         burger = AssembleBurger()
-        SaveBurger(burger)
-    except:
-        pass
-
+        if burger:
+            SaveBurger(burger)
+    except Exception as e:
+        print(f"Unexpected error: {e}")
 
 if __name__ == "__main__":
     MAIN()
+
