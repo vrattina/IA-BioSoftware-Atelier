@@ -84,3 +84,31 @@ Veuillez noter que ce projet est publié avec [Contributor Code of Conduct](http
 [cc-by-sa-shield]: https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg
 
 ----
+
+
+pleaide lama mais bug des la 2eme requete
+
+donc chatgpt version gratuite
+
+Voici mes requetes:
+
+
+##requete 1
+##Rajoute des commentaires sur le maximum de ligne pour chaque fonction et dans les fonctions pour comprendre le code
+
+
+##requete2
+##peux tu me re-ecrire le code en faisant en sorte que les ingredients possibles soit seulement les clés du dictionnaire INGREDIENT_PRICES
+
+
+##requete3
+##peux tu creer une fonction ask_quantity qui permets de demander combien de fromage il est necessaire?
+
+##push
+
+##requete 4
+##J'ai apporté des modifications peux tu debugger le code de telle manière que le script rende aussi le prix du burger?
+
+##push
+
+##Peux tu desormais faire en sorte que le code pass Ruff Lint, Safty Check, Bandit security et Pytest?
